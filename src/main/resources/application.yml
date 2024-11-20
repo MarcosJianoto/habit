@@ -1,0 +1,8 @@
+spring: 
+  application:
+    name: habit
+  datasource:
+    url: jdbc:postgresql://localhost:5432/habitsteste
+    username: postgres
+    password: 24091997
+    driver-class-name: org.postgresql.Driver

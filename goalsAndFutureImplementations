@@ -1,0 +1,25 @@
+
+[
+	{
+		"category": "Corrida", // Nome da categoria
+		"quantity": 5, // Quantidade da meta / goal
+		"un": "km", // Unidade de medida da categoria
+		
+		
+    		 // Lista com todas as entradas do objetivo
+		   [
+				{
+				"dateHabit": "10/11/2024 10:00",// data
+				"description": "Corrida de casa até a ponte hercílio luz",
+				"quantidade": 2.5
+				},
+				
+				{
+				"dateHabit": "10/11/2024 10:00",// data
+				"description": "Corrida de casa até a ponte hercílio luz",
+				"quantidade": 2.5
+				}
+		   ]		
+			
+	}
+]

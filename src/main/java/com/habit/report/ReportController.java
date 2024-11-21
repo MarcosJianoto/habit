@@ -42,11 +42,11 @@ public class ReportController {
 
 	}
 
-	@GetMapping("/report/weekresume")
-	public ResponseEntity<List<ReportWeekDTO>> reportGoalsWeekResume() {
+	@GetMapping("/report/reportresume")
+	public ResponseEntity<List<ReportMonthDTO>> reportGoalsWeekResume() {
 
-		List<ReportWeekDTO> reportWeekDTOs = reportService.reportGoalsWeekResume();
-		return ResponseEntity.ok().body(reportWeekDTOs);
+		List<ReportMonthDTO> reportMonthDTOs = reportService.reportGoalsWeekResume();
+		return ResponseEntity.ok().body(reportMonthDTOs);
 
 	}
 

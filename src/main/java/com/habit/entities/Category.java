@@ -27,7 +27,7 @@ public class Category {
 	private String name;
 
 	@Column(name = "un")
-	@Enumerated(EnumType.STRING)// ja salvamos como String o ENUM aqui <- se não salva como inteiro...
+	@Enumerated(EnumType.STRING) // ja salvamos como String o ENUM aqui <- se não salva como inteiro...
 	private CategoryUnity categoryUnity;
 
 	public Long getId() {

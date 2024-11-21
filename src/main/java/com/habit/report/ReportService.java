@@ -141,12 +141,9 @@ public class ReportService {
 		return listReportCategoryDTOs;
 	}
 
-	public List<ReportWeekDTO> reportGoalsWeekResume() {
+	private List<ReportMonthDTO> baseReportMonth(LocalDateTime startDate, LocalDateTime finishDate, Integer period) {
 
-		LocalDateTime finishDate = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).minusNanos(1);
-		LocalDateTime startDate = finishDate.minusDays(6).truncatedTo(ChronoUnit.DAYS);
-
-		List<ReportWeekDTO> reportWeekDTOs = new ArrayList<>();
+		List<ReportMonthDTO> reportMonthDTOs = new ArrayList<>();
 
 		List<Goals> goals = goalsRepository.findAll();
 
@@ -156,9 +153,9 @@ public class ReportService {
 				List<HabitEntry> habitEntries = habitEntryRepository
 						.findByCategoryAndDateHabitBetween(goal.getCategory(), startDate, finishDate);
 
-				ReportWeekDTO reportWeekDTO = new ReportWeekDTO();
-				reportWeekDTO.setName(goal.getCategory().getName());
-				reportWeekDTO.setUn(goal.getCategory().getUn());
+				ReportMonthDTO reportMonthDTO = new ReportMonthDTO();
+				reportMonthDTO.setName(goal.getCategory().getName());
+				reportMonthDTO.setUn(goal.getCategory().getUn());
 
 				Double maxActivity = 0.0;
 				for (HabitEntry hab : habitEntries) {
@@ -166,7 +163,7 @@ public class ReportService {
 						maxActivity = hab.getQuantity();
 					}
 				}
-				reportWeekDTO.setMaxActivityDay(maxActivity);
+				reportMonthDTO.setMaxActivityDay(maxActivity);
 
 				Double minActivity = maxActivity;
 				for (HabitEntry hab : habitEntries) {
@@ -179,65 +176,34 @@ public class ReportService {
 				for (HabitEntry hab : habitEntries) {
 					weekAverageSum += hab.getQuantity();
 				}
-				Double weekAverage = weekAverageSum / 7;
+				Double weekAverage = weekAverageSum / period;
 
-				reportWeekDTO.setMinActivityDay(minActivity);
-				reportWeekDTO.setWeekAverage(weekAverage);
+				reportMonthDTO.setMinActivityDay(minActivity);
+				reportMonthDTO.setMonthAverage(weekAverage);
 
-				reportWeekDTOs.add(reportWeekDTO);
+				reportMonthDTOs.add(reportMonthDTO);
 			}
 		}
-		return reportWeekDTOs;
+		return reportMonthDTOs;
+
+	}
+
+	public List<ReportMonthDTO> reportGoalsWeekResume() {
+
+		Integer period = 7;
+		LocalDateTime finishDate = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).minusNanos(1);
+		LocalDateTime startDate = finishDate.minusDays(period).truncatedTo(ChronoUnit.DAYS);
+
+		return baseReportMonth(startDate, finishDate, period);
 	}
 
 	public List<ReportMonthDTO> reportGoalsMonthResume() {
 
+		Integer period = 30;
 		LocalDateTime finishDate = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).minusNanos(1);
-		LocalDateTime startDate = finishDate.minusDays(30).truncatedTo(ChronoUnit.DAYS);
+		LocalDateTime startDate = finishDate.minusDays(period).truncatedTo(ChronoUnit.DAYS);
 
-		List<ReportMonthDTO> reportMonthDTOs = new ArrayList<>();
-
-		List<Goals> goals = goalsRepository.findAll();
-
-		if (!goals.isEmpty()) {
-
-			for (Goals goal : goals) {
-				List<HabitEntry> habitEntries = habitEntryRepository
-						.findByCategoryAndDateHabitBetween(goal.getCategory(), startDate, finishDate);
-
-				ReportMonthDTO reportMonthDTO = new ReportMonthDTO();
-				reportMonthDTO.setName(goal.getCategory().getName());
-				reportMonthDTO.setUn(goal.getCategory().getUn());
-
-				Double maxActivity = 0.0;
-				for (HabitEntry hab : habitEntries) {
-					if (hab.getQuantity() > maxActivity) {
-						maxActivity = hab.getQuantity();
-					}
-				}
-				reportMonthDTO.setMaxActivityDay(maxActivity);
-
-				Double minActivity = maxActivity;
-				for (HabitEntry hab : habitEntries) {
-					if (hab.getQuantity() < minActivity) {
-						minActivity = hab.getQuantity();
-					}
-				}
-
-				Double monthAverageSum = 0.0;
-				for (HabitEntry hab : habitEntries) {
-					monthAverageSum += hab.getQuantity();
-				}
-				Double monthAverage = monthAverageSum / 30;
-
-				reportMonthDTO.setMinActivityDay(minActivity);
-				reportMonthDTO.setMonthAverage(monthAverage);
-
-				reportMonthDTOs.add(reportMonthDTO);
-			}
-
-		}
-		return reportMonthDTOs;
+		return baseReportMonth(startDate, finishDate, period);
 	}
 
 	public List<ReportMonthDTO> reportGoalsEditMonthResume(Integer period) {
@@ -246,49 +212,8 @@ public class ReportService {
 		LocalDateTime finishDate = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).minusNanos(1);
 		LocalDateTime startDate = finishDate.minusDays(periodInteger).truncatedTo(ChronoUnit.DAYS);
 
-		List<ReportMonthDTO> reportMonthDTOs = new ArrayList<>();
+		return baseReportMonth(startDate, finishDate, periodInteger);
 
-		List<Goals> goals = goalsRepository.findAll();
-
-		if (!goals.isEmpty()) {
-
-			for (Goals goal : goals) {
-				List<HabitEntry> habitEntries = habitEntryRepository
-						.findByCategoryAndDateHabitBetween(goal.getCategory(), startDate, finishDate);
-
-				ReportMonthDTO reportMonthDTO = new ReportMonthDTO();
-				reportMonthDTO.setName(goal.getCategory().getName());
-				reportMonthDTO.setUn(goal.getCategory().getUn());
-
-				Double maxActivity = 0.0;
-				for (HabitEntry hab : habitEntries) {
-					if (hab.getQuantity() > maxActivity) {
-						maxActivity = hab.getQuantity();
-					}
-				}
-				reportMonthDTO.setMaxActivityDay(maxActivity);
-
-				Double minActivity = maxActivity;
-				for (HabitEntry hab : habitEntries) {
-					if (hab.getQuantity() < minActivity) {
-						minActivity = hab.getQuantity();
-					}
-				}
-
-				Double monthAverageSum = 0.0;
-				for (HabitEntry hab : habitEntries) {
-					monthAverageSum += hab.getQuantity();
-				}
-				Double monthAverage = monthAverageSum / periodInteger;
-
-				reportMonthDTO.setMinActivityDay(minActivity);
-				reportMonthDTO.setMonthAverage(monthAverage);
-
-				reportMonthDTOs.add(reportMonthDTO);
-			}
-
-		}
-		return reportMonthDTOs;
 	}
 
 	public List<GeneratedGoalsReportByPeriodDTO> generateGoalsReportByPeriod(Integer period) {
